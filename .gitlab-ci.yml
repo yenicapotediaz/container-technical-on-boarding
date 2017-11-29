@@ -12,9 +12,9 @@ variables:
   DOCKER_DRIVER: overlay2
   IMAGE_PROD_NAME: $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_NAME
   REGISTRY: quay.io
-  IMAGE_NAME: zabra-container
+  IMAGE_NAME: technical-on-boarding-container
   REGISTRY_USER: your_org # we set this to override to samsung_cnct in gitlab Group Variables
-  ROBOT_ACCOUNT: zabra_container_rw
+  ROBOT_ACCOUNT: technical_on_boarding_container_rw
 # Create a Gitlab Secret Variable called REGISTRY_PASSWORD and assign it the value of the registry robot docker login password.
 # DO NOT PASTE THIS PASSWORD HERE.
 

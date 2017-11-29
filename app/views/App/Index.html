@@ -1,0 +1,44 @@
+{{set . "title" "Home"}}
+{{template "header.html" .}}
+
+<div class="container theme-showcase" role="main">
+
+<header class="jumbotron" style="background-color:#80f2db">
+  <div class="container">
+    <div class="row">
+      <h1>Welcome to the Cloud Native Computing Team</h1>
+      <p>The purpose of this service is to automate the preparation of a new CNCT employee's technical onboarding, as a list of tasks, represented as issues in GitHub.</p>
+    </div>
+  </div>
+</header>
+
+<div class="page-header">
+  <h1>Instructions</h1>
+</div>
+
+<p>
+  <ol>
+    <li>Click the below <strong>Authorize</strong> button to first login into your Github account and
+        allow this service to create tasks on your behalf. Then this service will:</li>
+    <li>Create a <a href="https://help.github.com/articles/about-milestones/">Milestone</a>
+        and a <a href="https://help.github.com/articles/about-project-boards/">Project</a> in GitHub.</li>
+    <li>Create <a href="https://help.github.com/articles/about-issues/">Issues</a> in Github to represent
+        onboarding tasks, and link them to the Milestone and Project.</li>
+    <li>Assigns those issues to your Github user.</li>
+  </ol>
+</p>
+<p>
+  <a class="btn btn-lg btn-primary" href="/auth">Authorize</a>
+</p>
+
+<div class="container">
+  <div class="row">
+    <div class="span6">
+      {{template "flash.html" .}}
+    </div>
+  </div>
+</div>
+
+</div>
+
+{{template "footer.html" .}}
