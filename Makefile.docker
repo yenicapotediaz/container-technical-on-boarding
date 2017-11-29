@@ -1,0 +1,45 @@
+# import configuration variables
+include Makefile.env
+export $(shell sed -E 's/\??=.*//' Makefile.env)
+
+DOCKER_RUN_OPTS  =--rm -it -p 9000:9000 --env-file ./.env
+DOCKER_RUN_CMD  ?=
+
+up: build run
+
+build:
+	docker build --force-rm \
+	   --build-arg VERSION=$(APP_VERSION) \
+	   --build-arg BUILD=$(APP_BUILD) \
+	   -t $(IMAGE_DEVL_NAME) .
+
+test: build
+	docker run --rm --env-file ./template.env \
+		 $(IMAGE_DEVL_NAME) \
+		 revel test $(APP_PACKAGE) dev
+
+run:
+	docker run $(DOCKER_RUN_OPTS) $(IMAGE_DEVL_NAME) $(DOCKER_RUN_CMD)
+
+run-dev:
+	docker run $(DOCKER_RUN_OPTS) \
+	   -v $(PWD)/onboarding:/go/src/$(APP_PACKAGE) \
+		 -e VERSION=$(APP_VERSION) \
+		 -e BUILD=$(APP_BUILD) \
+	   $(IMAGE_DEVL_NAME) $(DOCKER_RUN_CMD)
+
+# only push from master. check that we are on samsung-cnct fork
+publish:
+ifneq (,$(findstring $(IMAGE_BRANCH), $(GITHUB_BRANCH)))
+ifneq (,$(findstring $(GITHUB_ORG), $(GITHUB_URI)))
+	docker tag $(IMAGE_DEVL_NAME) $(IMAGE_PROD_NAME)
+	docker push $(IMAGE_PROD_NAME)
+else
+	@echo "Not pushing release image to docker repo:\n    BRANCH_NAME='$(IMAGE_BRANCH)'\n    GIT_BRANCH='$(GITHUB_BRANCH)'\n    GIT_URI='$(GITHUB_URI)'"
+endif
+endif
+
+clean:
+	docker rmi $(IMAGE_DEVL_NAME) $(IMAGE_PROD_NAME)
+
+.PHONY: build run run-dev up publish clean
