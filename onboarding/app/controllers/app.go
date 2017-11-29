@@ -5,10 +5,10 @@ import (
 	"strconv"
 
 	"github.com/revel/revel"
-	"github.com/samsung-cnct/technical-on-boarding/onboarding/app"
-	"github.com/samsung-cnct/technical-on-boarding/onboarding/app/jobs"
-	"github.com/samsung-cnct/technical-on-boarding/onboarding/app/jobs/onboarding"
-	"github.com/samsung-cnct/technical-on-boarding/onboarding/app/models"
+	"github.com/samsung-cnct/container-technical-on-boarding/onboarding/app"
+	"github.com/samsung-cnct/container-technical-on-boarding/onboarding/app/jobs"
+	"github.com/samsung-cnct/container-technical-on-boarding/onboarding/app/jobs/onboarding"
+	"github.com/samsung-cnct/container-technical-on-boarding/onboarding/app/models"
 	"golang.org/x/net/websocket"
 )
 

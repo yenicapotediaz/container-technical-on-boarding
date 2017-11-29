@@ -3,7 +3,7 @@ package models
 import (
 	"math/rand"
 
-	"github.com/samsung-cnct/technical-on-boarding/onboarding/app/jobs/onboarding"
+	"github.com/samsung-cnct/container-technical-on-boarding/onboarding/app/jobs/onboarding"
 )
 
 // User model object to manage user authentication
