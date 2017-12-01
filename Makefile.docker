@@ -8,7 +8,7 @@ DOCKER_RUN_CMD  ?=
 up: build run
 
 build:
-	docker build --force-rm \
+	docker build --force-rm --no-cache \
 	   --build-arg VERSION=$(APP_VERSION) \
 	   --build-arg BUILD=$(APP_BUILD) \
 	   -t $(IMAGE_DEVL_NAME) .

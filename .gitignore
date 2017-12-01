@@ -35,3 +35,4 @@ docs/_build/
 
 # Mac
 .DS_Store
+.env

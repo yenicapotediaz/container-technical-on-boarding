@@ -5,7 +5,7 @@ import (
 
 	"github.com/masterminds/semver"
 	"github.com/revel/revel"
-	"github.com/samsung-cnct/container-technical-on-boarding/onboarding/app/jobs/onboarding"
+	"github.com/samsung-cnct/container-technical-on-boarding/app/jobs/onboarding"
 )
 
 // Version represents the application version

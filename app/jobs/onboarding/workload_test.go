@@ -12,7 +12,7 @@ import (
 	"time"
 
 	"github.com/google/go-github/github"
-	"github.com/samsung-cnct/container-technical-on-boarding/onboarding/app/jobs"
+	"github.com/samsung-cnct/container-technical-on-boarding/app/jobs"
 )
 
 // NOTE: This embodies an assumption of business process.

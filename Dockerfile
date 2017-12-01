@@ -16,7 +16,7 @@ RUN sed -i -- 's/${VERSION}/'"$VERSION"'/g' conf/app.conf && \
 
 RUN make all
 RUN mkdir /workload && \
-    cp -v ${PACKAGE_PATH}/onboarding/onboarding-issues.yaml ${ONBOARD_TASKS_FILE}
+    cp -v ${PACKAGE_PATH}/onboarding-issues.yaml ${ONBOARD_TASKS_FILE}
 
 VOLUME ["/go/"]
 EXPOSE 9000

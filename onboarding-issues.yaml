@@ -1,16 +1,16 @@
 
 
-githubOrganization: "{{ index .Environ "GITHUB_ORG" }}"
-githubRepository: "{{ index .Environ "GITHUB_REPO" }}"
-clientId: "{{ index .Environ "GITHUB_CLIENT_ID" }}"
-clientSecret: "{{ index .Environ "GITHUB_CLIENT_SECRET" }}"
+githubOrganization: "{{ index .Environ "onboard.org" }}"
+githubRepository: "{{ index .Environ "onboard.repo" }}"
+clientId: "{{ index .Environ "onboard.client.id" }}"
+clientSecret: "{{ index .Environ "onboard.client.secret" }}"
 
 task_owners: # The following will be referenced as assignees in GitHub
   new_hire: &new_hire # The newly hired staffmember who's in the process of onboarding.
-    github_username: "{{ index .Environ "GITHUB_USER" }}"
+    github_username: "{{ index .Environ "onboard.user" }}" 
+  
 
-
-tasks:
+tasks: 
   - title: Read Cloud Native Computing Team General Confluence Page
     assignee: *new_hire
     description: |
@@ -28,27 +28,27 @@ tasks:
 
   - title: Log into tooling
     assignee: *new_hire
-    description: |
+    description: | 
       Make sure you have access to:
 
       - [ ] Atlassian suite, JIRA and Confluence
       - [ ] Related Cloud Computing services (AWS, GCP/GKE, etc)
       - [ ] Slack
-
-  - title: Read kraken-lib GitHub README
+      
+  - title: Read K2 GitHub README
     assignee: *new_hire
     description: Reading is the new ... something.
 
-  - title: Spin up Kubernetes cluster on AWS using kraken
+  - title: Spin up Kubernetes cluster on AWS using the K2 CLI
     assignee: *new_hire
     description: |
-      See also: `https://github.com/samsung-cnct/kraken`
-
+      See also: `https://github.com/samsung-cnct/k2cli`
+    
   - title: Spin up Kubernetes cluster on AWS using the base Docker image
     assignee: *new_hire
     description: |
-      The easiest way to get started with kraken-lib directly is to use a kraken container image;
-      `docker pull quay.io/samsung_cnct/kraken-lib:latest`
+      The easiest way to get started with K2 directly is to use a K2 container image;
+      `docker pull quay.io/samsung_cnct/k2:latest`
 
   - title: Write a Golang app and deploy it onto your Kubernetes cluster
     assignee: *new_hire
@@ -60,23 +60,23 @@ tasks:
     description: |
       There is a lot of material in this list. Pick and choose what is more relevant and more helpful for you.
       `https://hanjin.atlassian.net/wiki/display/AG/Onboarding+Reference+Material`
-
+  
   - title: Learn basic Golang
     assignee: *new_hire
     description: |
       Start here? `https://tour.golang.org/welcome/1`
-
+      
       See also:
         - [Kubernetes Coding Conventions](https://github.com/kubernetes/community/blob/master/contributors/devel/coding-conventions.md)
 
   - title: Culture Lightning Talk
     assignee: *new_hire
-    description: |
-      Create a non-technical lightning talk to let us get to know you better.
-      The topics can be anything important to you - culture, hobbies, history, language etc.
+    description: | 
+      Create a non-technical lightning talk to let us get to know you better. 
+      The topics can be anything important to you - culture, hobbies, history, language etc. 
       Please include pictures.
-
-      You will present this to the whole team after general standup - please keep the talk between 4-5 minutes.
+ 
+      You will present this to the whole team after general standup - please keep the talk between 4-5 minutes. 
 
       Procedure:
         - Create presentation.

@@ -1,7 +1,0 @@
-*.priv
-prepare_workload
-temp/*
-coverage.*
-app/tmp/
-app/routes/
-test-results/
