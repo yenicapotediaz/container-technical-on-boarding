@@ -1,0 +1,93 @@
+
+
+githubOrganization: "{{ index .Environ "onboard.org" }}"
+githubRepository: "{{ index .Environ "onboard.repo" }}"
+clientId: "{{ index .Environ "onboard.client.id" }}"
+clientSecret: "{{ index .Environ "onboard.client.secret" }}"
+
+task_owners: # The following will be referenced as assignees in GitHub
+  new_hire: &new_hire # The newly hired staffmember who's in the process of onboarding.
+    github_username: "{{ index .Environ "onboard.user" }}" 
+  
+
+tasks: 
+  - title: Read Cloud Native Computing Team General Confluence Page
+    assignee: *new_hire
+    description: |
+      1. Read [this wiki page](https://hanjin.atlassian.net/wiki/display/AG/Cloud+Native+Computing+Team+Home)
+      2. Complete all action items noted in the page.
+      3. Update the top section of the page, and add your name to the team member list.
+      4. Familiarize yourself with [the wiki in general](https://hanjin.atlassian.net/wiki/).
+
+  - title: Update the Team's Bio Blurbs
+    assignee: *new_hire
+    description: |
+      Add a row at the bottom of the table for yourself, then write a little something.
+
+      `https://hanjin.atlassian.net/wiki/display/AG/Team+Bio+Blurbs`
+
+  - title: Log into tooling
+    assignee: *new_hire
+    description: | 
+      Make sure you have access to:
+
+      - [ ] Atlassian suite, JIRA and Confluence
+      - [ ] Related Cloud Computing services (AWS, GCP/GKE, etc)
+      - [ ] Slack
+      
+  - title: Read K2 GitHub README
+    assignee: *new_hire
+    description: Reading is the new ... something.
+
+  - title: Spin up Kubernetes cluster on AWS using the K2 CLI
+    assignee: *new_hire
+    description: |
+      See also: `https://github.com/samsung-cnct/k2cli`
+    
+  - title: Spin up Kubernetes cluster on AWS using the base Docker image
+    assignee: *new_hire
+    description: |
+      The easiest way to get started with K2 directly is to use a K2 container image;
+      `docker pull quay.io/samsung_cnct/k2:latest`
+
+  - title: Write a Golang app and deploy it onto your Kubernetes cluster
+    assignee: *new_hire
+    description: |
+      Something fun and worth sharing, hopefully. :)
+
+  - title: Read the Kubernetes onboarding reference material
+    assignee: *new_hire
+    description: |
+      There is a lot of material in this list. Pick and choose what is more relevant and more helpful for you.
+      `https://hanjin.atlassian.net/wiki/display/AG/Onboarding+Reference+Material`
+  
+  - title: Learn basic Golang
+    assignee: *new_hire
+    description: |
+      Start here? `https://tour.golang.org/welcome/1`
+      
+      See also:
+        - [Kubernetes Coding Conventions](https://github.com/kubernetes/community/blob/master/contributors/devel/coding-conventions.md)
+
+  - title: Culture Lightning Talk
+    assignee: *new_hire
+    description: | 
+      Create a non-technical lightning talk to let us get to know you better. 
+      The topics can be anything important to you - culture, hobbies, history, language etc. 
+      Please include pictures.
+ 
+      You will present this to the whole team after general standup - please keep the talk between 4-5 minutes. 
+
+      Procedure:
+        - Create presentation.
+        - Pick a date to present and schedule this with your manager.
+        - Record lightning talk via Zoom.
+        - [Store on team share](https://drive.google.com/drive/folders/0B8vQ_lXwx4cXVmVGZzlCOGFWZ0U)
+        - Link in your team bio entry in [confluence](https://hanjin.atlassian.net/wiki/display/AG/Team+Bio+Blurbs)
+
+  - title: Read additional CNCT development documents
+    assignee: *new_hire
+    description: |
+      - [ ] Read about [community meetins](https://github.com/samsung-cnct/docs/blob/master/cnct/community-meetings.md)
+      - [ ] Read about [github usage](https://github.com/samsung-cnct/docs/blob/master/cnct/github.md)
+      - [ ] Read about [slack usage](https://github.com/samsung-cnct/docs/blob/master/cnct/slack.md)

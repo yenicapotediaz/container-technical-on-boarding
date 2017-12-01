@@ -1,12 +1,3 @@
-<!-- Thanks for filing an issue! Before hitting the button, please answer these questions.-->
-
-**Note:** Please file issues for subcomponents under the appropriate repo
-
-| Component       | Repo                                                                                       |
-| --------------- | ------------------------------------------------------------------------------------------ |
-| solas           | [samsung-cnct/solas](https://github.com/samsung-cnct/solas/issues/new)                     |
-| solas-container | [samsung-cnct/solas-container](https://github.com/samsung-cnct/solas-container/issues/new) |
-| solas-chart     | [samsung-cnct/solas-chart](https://github.com/samsung-cnct/solas-chart/issues/new)         |
 
 **What keywords did you search in solas issues before filing this one?** (If you have found any duplicates, you should reply there instead.):
 ---
@@ -26,10 +17,6 @@ manner.  If we can't reproduce a bug or think a feature already exists, we
 might close your issue.  If we're wrong, PLEASE feel free to reopen it and
 explain why.
 -->
-
-**solas version**:
-
-Please provide a link to the repo you are trying to create.
 
 **Environment**:
 

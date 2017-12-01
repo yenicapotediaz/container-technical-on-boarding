@@ -1,62 +1,108 @@
-# solas-container
-`solas-container` is scaffolding for new container repositories hosted by Samsung CNCT. It
-implements our best practices, such as issue and PR templates, commit hooks,
-licensing guidelines, and so on.
+# Samsung CNCT Technical On Boarding container
+[![pipeline status](https://git.cnct.io/common-tools/samsung-cnct_container-technical-on-boarding/badges/master/pipeline.svg)](https://git.cnct.io/common-tools/samsung-cnct_container-technical-on-boarding/commits/master)
 
-We use GitLab to implement our CI/CD pipelines. There is one GitLab repository for 
-each GitHub repository. Each job builds, tests and, then deploys an artifact
-to Quay.
+This repo contains a Dockerfile to build and test the technical on-boarding container.
 
-SOLAS is also an international maritime treaty to ensure ships comply with
-minimum safety standards in construction, equipment and operation.
+This container is used by the chart-technical-on-boarding repo, and is part of the onboarding process for new Samsung CNCT employees.
 
-# Quickstart
+## Goals
 
-- The name of container repos should be of the form `container-${NAME}`. For example,
-`container-zabra` is the name of the repo which builds a continer named `zabra-container`.
+- Automate the preparation of a new CNCT employee's onboarding, as a list of tasks, represented as issues in GitHub.
+- Provide a functional example of a Go program, integrating with the GitHub API.
 
-- [Create](https://help.github.com/articles/creating-a-new-repository/) a
-new empty repo under the [`samsung-cnct`](https://github.com/samsung-cnct)
-org using the GitHub GUI, for example https://github.com/samsung-cnct/container-zabra .
+### Functional Requirements
 
-- [Duplicate](https://help.github.com/articles/duplicating-a-repository/)
-this repo (https://github.com/samsung-cnct/solas-container) and push it to the `container-zabra`
-repo you created in the previous step. Note the arguments to clone and push.
+- Loads a template of "tasks" to be assigned to a new-hire. 
+- Creates a Milestone and Project in GitHub. 
+- Creates Issues in GitHub to represent tasks, and links them to Milestone and Project.
+- Assigns those Issues to the new-hire.
 
+## Usage
+
+This application is designed to be hosted and used [here](http://technical-on-boarding.kubeme.io).
+To run locally see the [Development and Testing](#development-and-testing) section below.
+
+## Development and Testing
+
+### Running in Container
+
+Before you start you'll need:
+
+- Docker
+- Make
+- A local environment file
+
+To make an environment file that contains the Github client credentials you can copy the `template.env`
+file like so:
+```shell
+cp template.env .env
 ```
-git clone --bare https://github.com/samsung-cnct/solas-container.git
-cd solas-container.git
-git push --mirror https://github.com/samsung-cnct/container-zabra.git
-cd ..
-rm -rf solas-container.git
+
+To build and run the application in a container execute the following:
+
+```shell
+make -f Makefile.docker up
 ```
 
-- Configure CI/CD by following the instructions for
-[GitHub](https://github.com/samsung-cnct/solas/blob/master/docs/github.md),
-[Quay](https://github.com/samsung-cnct/solas/blob/master/docs/quay.md),
-and [GitLab](https://github.com/samsung-cnct/solas/blob/master/docs/gitlab.md).
+This will start a local HTTP server, at [127.0.0.1:9000](http://127.0.0.1:9000/). Open this URL
+in your browser, click the *Authorize* button, and log into GitHub _as yourself_. Once authenticated, 
+the application will direct you to the workload screen, start the task generateion job, and 
+provide progress on the job.
 
-[Jenkins](https://github.com/samsung-cnct/solas/blob/master/docs/jenkins.md) is currently being phased out.
+To support [Revel's][4] _hot code reload_ in container, use the `run-dev` option to map 
+your working directory into the container like so:
 
-- Configure [Slack](https://github.com/samsung-cnct/solas/blob/master/docs/slack.md)
-notifications.
+```shell
+make -f Makefile.docker run-dev
+```
 
-- [Fork](https://help.github.com/articles/fork-a-repo/) the `container-zabra` repo
-(https://github.com/samsung-cnct/container-zabra) from `samsung-cnct` and begin
-submitting PRs.
+#### Alternate listening IP addresses.
 
-# Versioning and Release Process
+*NOTE*: In some Docker configurations this may listen on a different IP address.
+Typically this is most easily found via:
 
-Container images are hosted on [Quay](https://quay.io) under "Repositories". We have the following conventions for versioning:
+```shell
+env | grep DOCKER_HOST  # hopefully not empty...
+```
 
-## Latest
+Or potentially:
 
-Any image tagged `:latest` is the most recent development version that has passed CI tests. Each successful code contribution will result in a new `:latest`. Use at your own risk.
+```shell
+docker run --net=host codenvy/che-ip 
+```
 
-## Tagged versions
+If either of the above indicate another IP address, try reaching that on port 9000.
 
-Container images are tagged according to [semver convention](http://semver.org/) in the format `<image_name>vx.y.z`.
+### Running Locally (in your desktop)
 
-## Releases
+If somehow you prefer to build and run this in Go on your desktop environment,
+rather than a preconfigured Docker container, here's how...
 
-Releases are currently done manually, by pushing a tag to a certain state of master. A release will be cut when it is determined to be useful. Each new solas-container repository will be automatically tagged with `v0.0.0`.
+Please ensure that [Go is properly set up](./SETTINGUPGO.md) first.
+
+```shell
+make setup   # installs dependencies, etc
+make test    # runs Golang unit tests/etc
+make build   # prepares the web app
+
+# app credentials required
+ONBOARD_CLIENT_ID="{clientid}" \ 
+    ONBOARD_CLIENT_SECRET="{clientsecret}" \
+    ONBOARD_REPO="technical-on-boarding" \
+    ONBOARD_ORG="samsung-cnct" \
+    VERSION="1.1.0" \
+    BUILD="local" \
+    revel run github.com/samsung-cnct/technical-on-boarding/onboarding
+```
+
+This workload relies heavily on the GitHub API, which also requires valid appliation tokens.
+
+To facilitate testing this projects includes a fairly robust mock of the GitHub API client, and relies on
+interfaces and proxy methods in several other points to allow the business logic to operate against a local
+testing environment without reaching GitHub's API service.
+
+Per golang's convention, tests are found in files ending with `_test.go`.
+
+[2]: https://github.com/settings/applications/new
+[3]: https://github.com/settings/apps
+[4]: https://revel.github.io/
