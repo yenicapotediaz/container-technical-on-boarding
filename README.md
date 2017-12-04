@@ -20,8 +20,9 @@ This container is used by the chart-technical-on-boarding repo, and is part of t
 
 ## Usage
 
-This application is designed to be hosted and used [here](http://technical-on-boarding.kubeme.io).
-To run locally see the [Development and Testing](#development-and-testing) section below.
+To generate the on boarding tasks go [here](http://technical-on-boarding.kubeme.io) and
+follow the instructions. To run a local instance for the purpose of examining and
+experimenting with the source code see [below](#development-and-testing).
 
 ## Development and Testing
 
@@ -35,6 +36,7 @@ Before you start you'll need:
 
 To make an environment file that contains the Github client credentials you can copy the `template.env`
 file like so:
+
 ```shell
 cp template.env .env
 ```
@@ -42,7 +44,7 @@ cp template.env .env
 To build and run the application in a container execute the following:
 
 ```shell
-make -f Makefile.docker up
+make docker-run
 ```
 
 This will start a local HTTP server, at [127.0.0.1:9000](http://127.0.0.1:9000/). Open this URL
@@ -54,7 +56,7 @@ To support [Revel's][4] _hot code reload_ in container, use the `run-dev` option
 your working directory into the container like so:
 
 ```shell
-make -f Makefile.docker run-dev
+make docker-run-dev
 ```
 
 #### Alternate listening IP addresses.
@@ -93,7 +95,7 @@ ONBOARD_CLIENT_ID="{clientid}" \
     ONBOARD_ORG="samsung-cnct" \
     VERSION="1.1.0" \
     BUILD="local" \
-    revel run github.com/samsung-cnct/technical-on-boarding/onboarding
+    revel run github.com/samsung-cnct/technical-on-boarding
 ```
 
 This workload relies heavily on the GitHub API, which also requires valid appliation tokens.
@@ -106,4 +108,4 @@ Per golang's convention, tests are found in files ending with `_test.go`.
 
 [2]: https://github.com/settings/applications/new
 [3]: https://github.com/settings/apps
-[4]: https://revel.github.io/
+[4]: https://revel.github.io://revel.github.io/manual/debug.html "Revel Hot Code Reload" 
