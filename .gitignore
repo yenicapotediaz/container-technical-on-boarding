@@ -35,4 +35,12 @@ docs/_build/
 
 # Mac
 .DS_Store
+
+# Build
 .env
+docker-build
+
+# Revel
+routes/
+tmp/
+test-results/

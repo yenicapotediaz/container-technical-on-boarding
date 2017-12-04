@@ -1,9 +1,19 @@
-# import configuration variables
-include Makefile.env
-export $(shell sed -E 's/\??=.*//' Makefile.env)
+APP_NAME         = technical-on-boarding
+APP_VERSION     ?= $(shell git describe --tags --abbrev=0 2>/dev/null | sed 's/^v//')
+APP_BUILD        = $(shell git rev-parse --short HEAD)
+APP_PACKAGE      = github.com/samsung-cnct/container-technical-on-boarding
+APP_PATH         = ./app
+APP_PATH_PKGS    = $(APP_PATH)/models $(APP_PATH)/controllers $(APP_PATH)/jobs $(APP_PATH)/jobs/onboarding
+
+IMAGE_REPO       = quay.io
+IMAGE_REPO_ORG   = samsung_cnct
+IMAGE_TAG       ?= $(APP_VERSION)-local-dev
+IMAGE_NAME      ?= $(IMAGE_REPO)/$(IMAGE_REPO_ORG)/$(APP_NAME):$(IMAGE_TAG)
 
 LDFLAGS=-ldflags "-X main.Version=${APP_VERSION} -X main.Build=${APP_BUILD}"
-PATH:="$(PATH):$(GOPATH)/bin/:`pwd`/go/bin/"
+
+DOCKER_RUN_OPTS  =--rm -it -p 9000:9000 --env-file ./.env
+DOCKER_RUN_CMD  ?=
 
 all: vet lint test build
 
@@ -57,4 +67,30 @@ godoc.txt: $(shell find ./ -name '*.go')
 
 docs:  godoc.txt
 
-.PHONY: vet lint test test-cover setup clean docs
+docker-build: Dockerfile
+	docker build --pull --force-rm \
+	   --build-arg VERSION=$(APP_VERSION) \
+	   --build-arg BUILD=$(APP_BUILD) \
+	   -t $(IMAGE_NAME) .
+	touch docker-build
+
+docker-test: docker-build
+	docker run --rm --env-file ./template.env \
+		 $(IMAGE_NAME) \
+		 revel test $(APP_PACKAGE) dev
+
+docker-run: docker-build
+	docker run $(DOCKER_RUN_OPTS) $(IMAGE_NAME) $(DOCKER_RUN_CMD)
+
+docker-run-dev: docker-build
+	docker run $(DOCKER_RUN_OPTS) \
+	   -v $(PWD):/go/src/$(APP_PACKAGE) \
+		 -e VERSION=$(APP_VERSION) \
+		 -e BUILD=$(APP_BUILD) \
+	   $(IMAGE_NAME) $(DOCKER_RUN_CMD)
+
+docker-clean:
+	rm docker-build
+	docker rmi $(IMAGE_NAME)
+
+.PHONY: vet lint test test-cover setup clean docs docker-test docker-run docker-run-dev docker-clean
