@@ -4,45 +4,36 @@ services:
   - docker:dind
 
 before_script:
+  - apk add --no-cache build-base
   - docker info
   - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
 
 variables:
   DOCKER_HOST: tcp://localhost:2375
   DOCKER_DRIVER: overlay2
-  IMAGE_PROD_NAME: $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_NAME
+
   REGISTRY: quay.io
-  IMAGE_NAME: technical-on-boarding-container
-  REGISTRY_USER: your_org # we set this to override to samsung_cnct in gitlab Group Variables
+  REGISTRY_ORG: samsung_cnct
   ROBOT_ACCOUNT: technical_on_boarding_container_rw
-# Create a Gitlab Secret Variable called REGISTRY_PASSWORD and assign it the value of the registry robot docker login password.
-# DO NOT PASTE THIS PASSWORD HERE.
+  # Create a Gitlab Secret Variable called REGISTRY_PASSWORD and assign 
+  # it the value of the registry robot docker login password.
+  # DO NOT PASTE THIS PASSWORD HERE.
+
+  IMAGE_NAME: technical-on-boarding-container
+  IMAGE_DEVL_NAME: ${CI_REGISTRY_IMAGE}:${CI_COMMIT_REF_NAME}-${CI_JOB_ID}
+  IMAGE_PROD_TAG: latest
+  IMAGE_PROD_NAME: ${REGISTRY}/${REGISTRY_ORG}/${IMAGE_NAME}:${IMAGE_PROD_TAG}
 
 stages:
   - build
   - test
   - publish
 
-build-branch:
-  variables:
-    IMAGE_DEVL_NAME: $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_NAME-$CI_JOB_ID
+build:
   stage: build
-  only:
-    - branches
-  except:
-    - master
   script:
-  - docker build -t $IMAGE_DEVL_NAME .
+  - IMAGE_NAME=${IMAGE_DEVL_NAME} make docker-build
   - docker push $IMAGE_DEVL_NAME
-
-build-master:
-  stage: build
-  only:
-    - master
-    - tags
-  script:
-  - docker build -t $IMAGE_PROD_NAME .
-  - docker push $IMAGE_PROD_NAME
 
 # Tests go here!
 # test:
@@ -53,19 +44,21 @@ publish-master:
   only:
     - master
   script:
-  - docker pull $IMAGE_PROD_NAME
-  - docker login ${REGISTRY} -u ${REGISTRY_USER}+${ROBOT_ACCOUNT} -p ${REGISTRY_PASSWORD}
+  - docker pull $IMAGE_DEVL_NAME
+  - docker login ${REGISTRY} -u ${REGISTRY_ORG}+${ROBOT_ACCOUNT} -p ${REGISTRY_PASSWORD}
   # Any merge to master (i.e. a successful CI pass) will be tagged and pushed as latest
-  - docker tag ${IMAGE_PROD_NAME} ${REGISTRY}/${REGISTRY_USER}/${IMAGE_NAME}:latest
-  - docker push ${REGISTRY}/${REGISTRY_USER}/${IMAGE_NAME}:latest
+  - docker tag ${IMAGE_DEVL_NAME} ${IMAGE_PROD_NAME}
+  - docker push ${IMAGE_PROD_NAME}
 
 publish-version-tag:
   stage: publish
   only:
     - /v[0-9]+\.[0-9]+(\.[0-9]+[a-z]?)?/
+  variables:
+    IMAGE_PROD_TAG: ${CI_COMMIT_TAG}
   script:
-  - docker pull $IMAGE_PROD_NAME
-  - docker login ${REGISTRY} -u ${REGISTRY_USER}+${ROBOT_ACCOUNT} -p ${REGISTRY_PASSWORD}
+  - docker pull $IMAGE_DEVL_NAME
+  - docker login ${REGISTRY} -u ${REGISTRY_ORG}+${ROBOT_ACCOUNT} -p ${REGISTRY_PASSWORD}
   # A tag push to master will be pushed to Quay with that tag
-  - docker tag ${IMAGE_PROD_NAME} ${REGISTRY}/${REGISTRY_USER}/${IMAGE_NAME}:$CI_COMMIT_TAG
-  - docker push ${REGISTRY}/${REGISTRY_USER}/${IMAGE_NAME}:$CI_COMMIT_TAG
+  - docker tag ${IMAGE_DEVL_NAME} ${IMAGE_PROD_NAME}
+  - docker push ${IMAGE_PROD_NAME}
