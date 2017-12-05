@@ -4,7 +4,7 @@ services:
   - docker:dind
 
 before_script:
-  - apk add --no-cache build-base
+  - apk add --no-cache build-base git
   - docker info
   - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
 
