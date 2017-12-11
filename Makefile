@@ -1,11 +1,15 @@
 APP_NAME         = technical-on-boarding
+APP_PACKAGE      = github.com/samsung-cnct/container-technical-on-boarding
+APP_PATH         = ./app
+APP_PATH_PKGS    = $(APP_PATH)/models $(APP_PATH)/controllers $(APP_PATH)/jobs $(APP_PATH)/jobs/onboarding
+
+# The version and build is statically set if you cannot calculate it via git.
+# Additionally if APP_VERSION or APP_BUILD is overriden (?=) then these
+# values will have precedence.
 GIT_VERSION      = $(shell git describe --tags --abbrev=0 2>/dev/null | sed 's/^v//')
 APP_VERSION     ?= $(if $(GIT_VERSION),$(GIT_VERSION),0.0.0)
 GIT_HASH         = $(shell git rev-parse --short HEAD)
 APP_BUILD       ?= $(if $(GIT_HASH),$(GIT_HASH),000)
-APP_PACKAGE      = github.com/samsung-cnct/container-technical-on-boarding
-APP_PATH         = ./app
-APP_PATH_PKGS    = $(APP_PATH)/models $(APP_PATH)/controllers $(APP_PATH)/jobs $(APP_PATH)/jobs/onboarding
 
 IMAGE_REPO       = quay.io
 IMAGE_REPO_ORG   = samsung_cnct
