@@ -83,7 +83,8 @@ func SetupVersion() {
 
 	semVersion, err := semver.NewVersion(semVersionString)
 	if err != nil {
-		revel.ERROR.Fatalf("Cannot setup semantic version of '%s': %v", semVersionString, err)
+		revel.WARN.Printf("Cannot setup semantic version from configuration ('%s': %v)", semVersionString, err)
+		semVersion, _ = semver.NewVersion("0.0.0+000")
 	}
 
 	SemanticVersion = &Version{
