@@ -1,13 +1,19 @@
 APP_NAME         = technical-on-boarding
-APP_VERSION     ?= $(shell git describe --tags --abbrev=0 2>/dev/null | sed 's/^v//')
-APP_BUILD        = $(shell git rev-parse --short HEAD)
 APP_PACKAGE      = github.com/samsung-cnct/container-technical-on-boarding
 APP_PATH         = ./app
 APP_PATH_PKGS    = $(APP_PATH)/models $(APP_PATH)/controllers $(APP_PATH)/jobs $(APP_PATH)/jobs/onboarding
 
+# The version and build is statically set if you cannot calculate it via git.
+# Additionally if APP_VERSION or APP_BUILD is overriden (?=) then these
+# values will have precedence.
+GIT_VERSION      = $(shell git describe --tags --abbrev=0 2>/dev/null | sed 's/^v//')
+APP_VERSION     ?= $(if $(GIT_VERSION),$(GIT_VERSION),0.0.0)
+GIT_HASH         = $(shell git rev-parse --short HEAD)
+APP_BUILD       ?= $(if $(GIT_HASH),$(GIT_HASH),000)
+
 IMAGE_REPO       = quay.io
 IMAGE_REPO_ORG   = samsung_cnct
-IMAGE_TAG       ?= $(APP_VERSION)-local-dev
+IMAGE_TAG       ?= local-dev
 IMAGE_NAME      ?= $(IMAGE_REPO)/$(IMAGE_REPO_ORG)/$(APP_NAME):$(IMAGE_TAG)
 
 LDFLAGS=-ldflags "-X main.Version=${APP_VERSION} -X main.Build=${APP_BUILD}"
@@ -84,7 +90,7 @@ docker-run: docker-build
 
 docker-run-dev: docker-build
 	docker run $(DOCKER_RUN_OPTS) \
-	   -v $(PWD):/go/src/$(APP_PACKAGE) \
+	   -v $(GOPATH):/go \
 		 -e VERSION=$(APP_VERSION) \
 		 -e BUILD=$(APP_BUILD) \
 	   $(IMAGE_NAME) $(DOCKER_RUN_CMD)
